@@ -1,28 +1,39 @@
 const User = require("../models/user.model.js");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const { createToken } = require("../utilities/JWT")
+const { validateUser } = require("../utilities/joi")
 
 // Create and Save a new User
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body) {
-    res.status(400).send({
-      message: "Content can not be empty!"
+  const { error, value } = validateUser({ email: req.body.email, password: req.body.password, password_confirmation: req.body.passwordConfirmation });
+  if (error) {
+    return res.status(400).send({
+      isRegistered: false,
+      message: error.details
     });
   }
+
+  const hash = bcrypt.hashSync(req.body.password, saltRounds);
 
   // Create a User
   const user = new User({
     email: req.body.email,
-    password: req.body.password,
+    password: hash,
   });
 
   // Save User in the database
   User.create(user, (err, data) => {
     if (err)
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the User."
+        isRegistered: false,
+        message: [{ message: err.message }] || ["Some error occurred while creating the User."]
       });
-    else res.send(data);
+    else res.send({
+      isRegistered: true,
+      message: "User created with success"
+    });
   });
 };
 
@@ -35,25 +46,40 @@ exports.login = (req, res) => {
     });
   }
 
-  const user = new User({
+
+
+  const user = {
     email: req.body.email,
     password: req.body.password,
-  });
+  }
 
   User.login(user, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
         res.status(404).send({
-          message: `wrong combination credentials`
+          message: `Email unknown`
         });
       } else {
         res.status(500).send({
           message: "Some error occurred while logging the user"
         });
       }
-    } else res.send({
-      message: "Logged with success"
-    });
+    } else {
+      const isPasswordValid = bcrypt.compareSync(user.password, data.password)
+      if (isPasswordValid) {
+        const credentials = data
+        delete credentials.password;
+        credentials.token = createToken(user)
+        res.header("x-auth-token", credentials.token).send({
+          message: "Logged with success",
+          credentials
+        });
+      } else {
+        res.send({
+          message: "Wrong password"
+        });
+      }
+    }
   });
 };
 
@@ -143,4 +169,13 @@ exports.deleteAll = (req, res) => {
       });
     else res.send({ message: `All Users were deleted successfully!` });
   });
+};
+
+exports.checkLogin = (req, res) => {
+  console.log(req.session.user, 'credentials')
+  if (req.session.user) {
+    res.send({ loggedIn: true, user: req.user.session })
+  } else {
+    res.send({ loggedIn: false })
+  }
 };

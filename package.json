@@ -4,7 +4,8 @@
   "description": "Node.js Restful CRUD API with Node.js, Express and MySQL",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devStart": "nodemon server.js"
   },
   "keywords": [
     "nodejs",
@@ -15,13 +16,17 @@
   "author": "mathieu_thiry",
   "license": "ISC",
   "dependencies": {
-    "config": "^3.3.6",
+    "bcrypt": "^5.0.1",
+    "connect-mssql-v2": "^2.0.2",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "debug": "^2.6.9",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.2",
     "helmet": "^4.6.0",
     "joi": "^17.4.1",
+    "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
     "nodemon": "^2.0.12"

@@ -1,5 +1,6 @@
 const sql = require("./db.js");
 
+
 // constructor
 const User = function (user) {
   this.email = user.email;
@@ -7,21 +8,30 @@ const User = function (user) {
 };
 
 User.create = (newUser, result) => {
-  sql.query("INSERT INTO users SET ?", newUser, (err, res) => {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
+  sql.query("SELECT email FROM users WHERE email = ?", newUser.email, (err, res) => {
+
+    if (res.length) {
+      console.log("user already exist: ", res[0]);
+      result({ message: "User already exist" }, null);
       return;
     }
 
-    console.log("created user: ", { id: res.insertId, ...newUser });
-    result(null, { id: res.insertId, ...newUser });
-  });
+    sql.query("INSERT INTO users SET ?", newUser, (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      console.log("created user: ", { id: res.insertId, ...newUser });
+      result(null, { id: res.insertId, ...newUser });
+    });
+  })
 };
 
 User.login = (user, result) => {
 
-  sql.query("SELECT email, password FROM users WHERE email = ? AND password = ?", [user.email, user.password], (err, res) => {
+  sql.query("SELECT * FROM users WHERE email = ?", user.email, (err, res) => {
 
     if (err) {
       console.log("error: ", err);
@@ -30,7 +40,7 @@ User.login = (user, result) => {
     }
 
     if (res.length) {
-      console.log("Utilisateur connecté avec succès: ", res[0]);
+      console.log(res, 'res entier')
       result(null, res[0]);
       return;
     } else {
