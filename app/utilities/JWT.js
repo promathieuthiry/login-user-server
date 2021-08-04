@@ -19,7 +19,7 @@ async function validateToken(req, res, next) {
             console.log(req.user, "user")
             return next()
         } catch (error) {
-            res.status(400).send("Invalid token")
+            res.status(401).send("Invalid token")
         }
     }
 

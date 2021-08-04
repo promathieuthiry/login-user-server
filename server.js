@@ -25,7 +25,9 @@ app.use(cors({
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true })); //Parse URL-encoded bodies
-app.use(express.static('public')) // serve static content
+// app.use(express.static('public')) // serve static content
+app.use(express.static(__dirname));
+
 app.use(helmet());
 app.use(cookieParser())
 

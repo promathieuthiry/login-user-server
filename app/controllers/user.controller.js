@@ -2,7 +2,7 @@ const User = require("../models/user.model.js");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const { createToken } = require("../utilities/JWT")
-const { validateUser } = require("../utilities/joi")
+const { validateUser, updateUser } = require("../utilities/joi")
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -45,8 +45,6 @@ exports.login = (req, res) => {
       message: "Content can not be empty!"
     });
   }
-
-
 
   const user = {
     email: req.body.email,
@@ -108,7 +106,11 @@ exports.findOne = (req, res) => {
           message: "Error retrieving User with id " + req.params.userId
         });
       }
-    } else res.send(data);
+    } else {
+      const userInfo = data
+      delete userInfo.password;
+      res.send(userInfo);
+    }
   });
 };
 
@@ -121,25 +123,65 @@ exports.update = (req, res) => {
     });
   }
 
-  console.log(req.body);
-
-  User.updateById(
-    req.params.userId,
-    new User(req.body),
-    (err, data) => {
-      if (err) {
-        if (err.kind === "not_found") {
-          res.status(404).send({
-            message: `Not found User with id ${req.params.userId}.`
-          });
-        } else {
-          res.status(500).send({
-            message: "Error updating User with id " + req.params.userId
-          });
-        }
-      } else res.send(data);
+  // Different Route if upload password
+  if (req.body.password) {
+    const { error, value } = validateUser({ email: req.body.email, password: req.body.password, password_confirmation: req.body.password_confirmation });
+    if (error) {
+      return res.status(400).send({
+        isRegistered: false,
+        message: error.details
+      });
     }
-  );
+    req.body.password = bcrypt.hashSync(req.body.password, saltRounds);
+    User.updateByIdWithPassword(
+      req.params.userId, req.body,
+      (err, data) => {
+        if (err) {
+          if (err.kind === "not_found") {
+            res.status(404).send({
+              message: [`Not found User with id ${req.params.userId}.`]
+            });
+          } else {
+            res.status(500).send({
+              message: ["Error updating User with id " + req.params.userId]
+            });
+          }
+        } else res.send({
+          message: ["Updated with success"],
+          data
+        });
+      }
+    );
+  } else {
+    // Validate request
+    const { error, value } = updateUser({ email: req.body.email });
+    console.log(error, "error")
+    if (error) {
+      return res.status(400).send({
+        // message: "Some error occurred while creating the User".
+        message: error.details
+      });
+    }
+    User.updateById(
+      req.params.userId, req.body,
+      (err, data) => {
+        if (err) {
+          if (err.kind === "not_found") {
+            res.status(404).send({
+              message: [`Not found User with id ${req.params.userId}.`]
+            });
+          } else {
+            res.status(500).send({
+              message: ["Error updating User with id " + req.params.userId]
+            });
+          }
+        } else res.send({
+          message: ["Updated with success"],
+          data
+        });
+      }
+    );
+  }
 };
 
 // Delete a User with the specified userId in the request
@@ -178,4 +220,30 @@ exports.checkLogin = (req, res) => {
   } else {
     res.send({ loggedIn: false })
   }
+};
+
+// Save profile picture from the database.
+exports.uploadImage = (req, res) => {
+  console.log(req)
+  // Create a file object
+  if (!req.file) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+  const image = {
+    type: req.file.mimetype,
+    size: req.file.size,
+    name: req.file.originalname,
+    path: req.file.path,
+    users_id: req.body.users_id
+  }
+  User.uploadImage(image, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while uploading the image."
+      });
+    else res.send({ message: `Sent with success` });
+  });
 };

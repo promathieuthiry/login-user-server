@@ -18,5 +18,17 @@ function validateUser(user) {
     return JoiSchema.validate(user)
 }
 
+function updateUser(user) {
+    const JoiSchema = Joi.object({
+        email: Joi.string()
+            .email()
+            .min(5)
+            .max(50)
+            .required()
+    })
 
-module.exports = { validateUser }
+    return JoiSchema.validate(user)
+}
+
+
+module.exports = { validateUser, updateUser }

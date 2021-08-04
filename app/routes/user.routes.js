@@ -10,6 +10,7 @@ const express = require("express");
 const router = express.Router()
 const users = require("../controllers/user.controller.js");
 const { validateToken } = require("../utilities/JWT")
+const upload = require("../utilities/upload")
 
 
 // Register a new user
@@ -17,6 +18,9 @@ router.post("/api/users/register", users.create);
 
 // Login an user
 router.post("/api/users/login", users.login);
+
+// Upload profile picture
+router.post("/api/users/image", validateToken, upload.single("file"), users.uploadImage);
 
 // Check if an user is logged
 router.get("/api/users/login", validateToken, users.checkLogin);
@@ -35,5 +39,6 @@ router.delete("/api/users/delete/:userId", validateToken, users.delete);
 
 // Delete a new user
 router.delete("/api/users", validateToken, users.deleteAll);
+
 
 module.exports = router

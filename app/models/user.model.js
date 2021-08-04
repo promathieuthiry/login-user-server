@@ -52,7 +52,7 @@ User.login = (user, result) => {
 
 
 User.findById = (UserId, result) => {
-  sql.query("SELECT id FROM users WHERE id = ?", UserId, (err, res) => {
+  sql.query("SELECT * FROM users WHERE id = ?", UserId, (err, res) => {
     if (err) {
       result(err, null);
       return;
@@ -84,8 +84,33 @@ User.getAll = result => {
 
 User.updateById = (id, user, result) => {
   sql.query(
-    "UPDATE users SET firstName = ?, lastName = ? WHERE id = ?",
-    [user.firstName, user.firstName, +id],
+    "UPDATE users SET firstName = ?, lastName = ?, email = ?, phone = ?, address = ?, city = ?, state = ?, zipcode = ?, country = ? WHERE id = ?",
+    // firstName: "", lastName: "", email: "", phone: "", address: "", city: "", state: "", zipCode: "", country: "", password:
+    [user.firstName, user.lastName, user.email, user.phone ? user.phone : null, user.address, user.city, user.state, user.zipcode ? user.zipcode : null, user.country, +id],
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+        return;
+      }
+
+      if (res.affectedRows == 0) {
+        // not found User with the id
+        result({ kind: "not_found" }, null);
+        return;
+      }
+
+      console.log("updated user: ", { id: id, ...user });
+      result(null, { id: id, ...user });
+    }
+  );
+};
+
+User.updateByIdWithPassword = (id, user, result) => {
+  sql.query(
+    "UPDATE users SET firstName = ?, lastName = ?, email = ?, phone = ?, address = ?, city = ?, state = ?, zipcode = ?, country = ?, password = ? WHERE id = ?",
+    // firstName: "", lastName: "", email: "", phone: "", address: "", city: "", state: "", zipCode: "", country: "", password:
+    [user.firstName, user.lastName, user.email, user.phone ? user.phone : null, user.address, user.city, user.state, user.zipcode ? user.zipcode : null, user.country, user.password, +id],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -134,6 +159,19 @@ User.removeAll = result => {
 
     console.log(`deleted ${res.affectedRows} users`);
     result(null, res);
+  });
+};
+
+User.uploadImage = (image, result) => {
+  sql.query("INSERT INTO files SET ?", image, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("save file");
+    result(null, { result });
   });
 };
 
