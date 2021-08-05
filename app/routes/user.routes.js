@@ -34,7 +34,7 @@ router.delete("/api/users/delete/:userId", validateToken, users.delete);
 router.delete("/api/users", validateToken, users.deleteAll);
 
 // Get profile picture
-router.get("/api/users/img/:userId", validateToken, users.getUserImage);
+router.get("/api/users/img/:userId", users.getUserImage);
 
 
 
