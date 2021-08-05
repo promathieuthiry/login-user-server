@@ -228,7 +228,7 @@ exports.uploadImage = (req, res) => {
   console.log(req.files, "file")
   const { name, data } = req.files.file;
   // Create a file object
-  if (!req.file) {
+  if (!req.files) {
     res.status(400).send({
       message: "Content can not be empty!"
     });
