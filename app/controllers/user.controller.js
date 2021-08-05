@@ -244,7 +244,9 @@ exports.uploadImage = (req, res) => {
         message:
           err.message || "Some error occurred while uploading the image."
       });
-    else res.send({ message: `Sent with success` });
+    else res.send({
+      message: `Sent with success`, idfiles: data.idfiles
+    });
   });
 };
 
