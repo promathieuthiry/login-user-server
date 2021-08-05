@@ -192,4 +192,17 @@ User.getImage = (UserId, result) => {
   });
 };
 
+User.hasImageProfile = (UserId, result) => {
+  sql.query("SELECT * FROM files WHERE users_id = ? ", UserId, (err, res) => {
+    if (res.length) {
+      console.log("found image: ", res[0]);
+      result(null, true);
+      return;
+    } else {
+      result(null, false);
+    }
+  });
+};
+
+
 module.exports = User;

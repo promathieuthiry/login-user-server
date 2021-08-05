@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const { createToken } = require("../utilities/JWT")
 const { validateUser, updateUser } = require("../utilities/joi")
-const { validateImage } = require("../utilities/image")
 const FileType = require('file-type');
 
 
@@ -249,7 +248,7 @@ exports.uploadImage = (req, res) => {
   });
 };
 
-
+// Send image
 exports.getUserImage = (req, res) => {
   const userId = req.params.userId;
   User.getImage(userId, (err, data) => {
@@ -259,23 +258,27 @@ exports.getUserImage = (req, res) => {
           err.message || "Some error occurred while uploading the image."
       });
     else {
-      // const contentType = await FileType.fromBuffer(img.img); // get the mimetype of the buffer (in this case its gonna be jpg but can be png or w/e)
-      // res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
-      // res.end(img.img);
       console.log(data, "data")
-
-
       FileType.fromBuffer(data.data)
         .then((contentType) => {
           res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
           res.end(data.data);
         })
         .catch(error => console.warn(error))
-
-      // FileType.fromBuffer(data.data, (contentType) => {
-      //   res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
-      //   res.end(data.data);
-      // })
     };
+  });
+};
+
+exports.hasImage = (req, res) => {
+  User.hasImageProfile(req.params.userId, (err, data) => {
+    if (data) {
+      res.send({
+        hasImage: true
+      });
+    } else {
+      res.status(500).send({
+        hasImage: false
+      });
+    }
   });
 };

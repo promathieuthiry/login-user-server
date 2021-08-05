@@ -36,6 +36,7 @@ router.delete("/api/users", validateToken, users.deleteAll);
 // Get profile picture
 router.get("/api/users/img/:userId", users.getUserImage);
 
-
+// Retrieve a single user with userId
+router.get("/api/users/has/img/:userId", validateToken, users.hasImage);
 
 module.exports = router
