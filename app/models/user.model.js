@@ -146,8 +146,6 @@ User.uploadImage = (image, result) => {
       result(err, null);
       return;
     }
-
-    console.log(res, "res");
     result(null, res[0]);
   });
 };

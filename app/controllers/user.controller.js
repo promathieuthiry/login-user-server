@@ -239,6 +239,7 @@ exports.uploadImage = (req, res) => {
     users_id: req.body.users_id
   }
   User.uploadImage(image, (err, data) => {
+    console.log(data, "data")
     if (err)
       res.status(500).send({
         message:
