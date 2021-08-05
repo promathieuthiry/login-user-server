@@ -250,8 +250,8 @@ exports.uploadImage = (req, res) => {
 
 // Send image
 exports.getUserImage = (req, res) => {
-  const userId = req.params.userId;
-  User.getImage(userId, (err, data) => {
+  const idfiles = req.params.idfiles;
+  User.getImage(idfiles, (err, data) => {
     if (err)
       res.status(500).send({
         message:
@@ -274,7 +274,8 @@ exports.hasImage = (req, res) => {
     if (data) {
       console.log(data, "data")
       res.send({
-        hasImage: true
+        hasImage: true,
+        idfiles: idfiles
       });
     } else {
       res.status(500).send({

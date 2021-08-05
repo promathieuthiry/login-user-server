@@ -174,8 +174,8 @@ User.uploadImage = (image, result) => {
 };
 
 
-User.getImage = (UserId, result) => {
-  sql.query("SELECT * FROM files WHERE users_id = ? ORDER BY idfiles DESC LIMIT 1", UserId, (err, res) => {
+User.getImage = (idfiles, result) => {
+  sql.query("SELECT * FROM files WHERE idfiles = ?", idfiles, (err, res) => {
     if (err) {
       result(err, null);
       return;
@@ -193,7 +193,7 @@ User.getImage = (UserId, result) => {
 };
 
 User.hasImageProfile = (UserId, result) => {
-  sql.query("SELECT * FROM files WHERE users_id = ? ", UserId, (err, res) => {
+  sql.query("SELECT * FROM files WHERE users_id = ? ORDER BY idfiles DESC LIMIT 1", UserId, (err, res) => {
     if (res.length) {
       console.log("found image: ", res[0]);
       result(null, res[0]);
