@@ -2,9 +2,10 @@ require('dotenv').config();
 const express = require("express");
 const cors = require('cors');
 const morgan = require('morgan')
-const helmet = require("helmet");
 const cookieParser = require("cookie-parser")
 const cookieSession = require('cookie-session')
+const fileUpload = require('express-fileupload');
+
 
 // Routes
 const userRoutes = require("./app/routes/user.routes")
@@ -29,8 +30,9 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true })); //Parse URL-encoded bodies
 // app.use(express.static('public')) // serve static content
 app.use(express.static(__dirname));
+app.use(fileUpload());
 
-app.use(helmet());
+
 app.use(cookieParser())
 
 app.use(cookieSession({

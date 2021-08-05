@@ -175,4 +175,23 @@ User.uploadImage = (image, result) => {
   });
 };
 
+
+User.getImage = (UserId, result) => {
+  sql.query("SELECT * FROM files WHERE users_id = ? ORDER BY idfiles DESC LIMIT 1", UserId, (err, res) => {
+    if (err) {
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      console.log("found image: ", res[0]);
+      result(null, res[0]);
+      return;
+    }
+
+    // not found User with the id
+    result({ kind: "not_found" }, null);
+  });
+};
+
 module.exports = User;

@@ -1,11 +1,3 @@
-// module.exports = app => {
-//   const customers = require("../controllers/customer.controller.js");
-
-//   // Create a new Customer
-//   app.post("/customers", customers.create);
-
-// };
-
 const express = require("express");
 const router = express.Router()
 const users = require("../controllers/user.controller.js");
@@ -20,7 +12,8 @@ router.post("/api/users/register", users.create);
 router.post("/api/users/login", users.login);
 
 // Upload profile picture
-router.post("/api/users/image", validateToken, upload.single("file"), users.uploadImage);
+// router.post("/api/users/image", validateToken, upload.single("file"), users.uploadImage);
+router.post("/api/users/image", validateToken, users.uploadImage);
 
 // Check if an user is logged
 router.get("/api/users/login", validateToken, users.checkLogin);
@@ -39,6 +32,10 @@ router.delete("/api/users/delete/:userId", validateToken, users.delete);
 
 // Delete a new user
 router.delete("/api/users", validateToken, users.deleteAll);
+
+// Get profile picture
+router.get("/api/users/img/:userId", validateToken, users.getUserImage);
+
 
 
 module.exports = router

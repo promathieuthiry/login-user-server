@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const { createToken } = require("../utilities/JWT")
 const { validateUser, updateUser } = require("../utilities/joi")
+const { validateImage } = require("../utilities/image")
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -224,7 +225,8 @@ exports.checkLogin = (req, res) => {
 
 // Save profile picture from the database.
 exports.uploadImage = (req, res) => {
-  console.log(req)
+  console.log(req.files, "file")
+  const { name, data } = req.files.file;
   // Create a file object
   if (!req.file) {
     res.status(400).send({
@@ -232,10 +234,8 @@ exports.uploadImage = (req, res) => {
     });
   }
   const image = {
-    type: req.file.mimetype,
-    size: req.file.size,
-    name: req.file.originalname,
-    path: req.file.path,
+    name: name,
+    data: data,
     users_id: req.body.users_id
   }
   User.uploadImage(image, (err, data) => {
@@ -245,5 +245,27 @@ exports.uploadImage = (req, res) => {
           err.message || "Some error occurred while uploading the image."
       });
     else res.send({ message: `Sent with success` });
+  });
+};
+
+
+exports.getUserImage = (req, res) => {
+  const userId = req.params.userId;
+  User.getImage(userId, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while uploading the image."
+      });
+    else {
+      // const contentType = await FileType.fromBuffer(img.img); // get the mimetype of the buffer (in this case its gonna be jpg but can be png or w/e)
+      // res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
+      // res.end(img.img);
+
+      FileType.fromBuffer(img.img, (contentType) => {
+        res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
+        res.end(img.img);
+      })
+    };
   });
 };
