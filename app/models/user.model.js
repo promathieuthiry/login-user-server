@@ -11,14 +11,12 @@ User.create = (newUser, result) => {
   sql.query("SELECT email FROM users WHERE email = ?", newUser.email, (err, res) => {
 
     if (res.length) {
-      console.log("user already exist: ", res[0]);
       result({ message: "User already exist" }, null);
       return;
     }
 
     sql.query("INSERT INTO users SET ?", newUser, (err, res) => {
       if (err) {
-        console.log("error: ", err);
         result(err, null);
         return;
       }
@@ -33,7 +31,6 @@ User.login = (user, result) => {
   sql.query("SELECT * FROM users WHERE email = ?", user.email, (err, res) => {
 
     if (err) {
-      console.log("error: ", err);
       result(err, null);
       return;
     }
@@ -55,9 +52,7 @@ User.findById = (UserId, result) => {
       result(err, null);
       return;
     }
-
     if (res.length) {
-      console.log("found user: ", res[0]);
       result(null, res[0]);
       return;
     }
@@ -70,12 +65,9 @@ User.findById = (UserId, result) => {
 User.getAll = result => {
   sql.query("SELECT * FROM users", (err, res) => {
     if (err) {
-      console.log("error: ", err);
       result(null, err);
       return;
     }
-
-    console.log("Users: ", res);
     result(null, res);
   });
 };
@@ -87,7 +79,6 @@ User.updateById = (id, user, result) => {
     [user.firstName, user.lastName, user.occupation, user.email, user.phone ? user.phone : null, user.address, user.city, user.state, user.zipcode ? user.zipcode : null, user.country, +id],
     (err, res) => {
       if (err) {
-        console.log("error: ", err);
         result(null, err);
         return;
       }
@@ -97,8 +88,6 @@ User.updateById = (id, user, result) => {
         result({ kind: "not_found" }, null);
         return;
       }
-
-      console.log("updated user: ", { id: id, ...user });
       result(null, { id: id, ...user });
     }
   );
@@ -111,7 +100,6 @@ User.updateByIdWithPassword = (id, user, result) => {
     [user.firstName, user.lastName, user.email, user.occupation, user.phone ? user.phone : null, user.address, user.city, user.state, user.zipcode ? user.zipcode : null, user.country, user.password, +id],
     (err, res) => {
       if (err) {
-        console.log("error: ", err);
         result(null, err);
         return;
       }
@@ -121,8 +109,6 @@ User.updateByIdWithPassword = (id, user, result) => {
         result({ kind: "not_found" }, null);
         return;
       }
-
-      console.log("updated user: ", { id: id, ...user });
       result(null, { id: id, ...user });
     }
   );
@@ -131,7 +117,6 @@ User.updateByIdWithPassword = (id, user, result) => {
 User.remove = (id, result) => {
   sql.query("DELETE FROM users WHERE id = ?", +id, (err, res) => {
     if (err) {
-      console.log("error: ", err);
       result(null, err);
       return;
     }
@@ -141,8 +126,6 @@ User.remove = (id, result) => {
       result({ kind: "not_found" }, null);
       return;
     }
-
-    console.log("deleted user with id: ", id);
     result(null, res);
   });
 };
@@ -150,12 +133,9 @@ User.remove = (id, result) => {
 User.removeAll = result => {
   sql.query("DELETE FROM users", (err, res) => {
     if (err) {
-      console.log("error: ", err);
       result(null, err);
       return;
     }
-
-    console.log(`deleted ${res.affectedRows} users`);
     result(null, res);
   });
 };
@@ -163,13 +143,12 @@ User.removeAll = result => {
 User.uploadImage = (image, result) => {
   sql.query("INSERT INTO files SET ?", image, (err, res) => {
     if (err) {
-      console.log("error: ", err);
       result(err, null);
       return;
     }
 
-    console.log("save file");
-    result(null, { result });
+    console.log(res, "res");
+    result(null, { res });
   });
 };
 
@@ -180,9 +159,7 @@ User.getImage = (idfiles, result) => {
       result(err, null);
       return;
     }
-
     if (res.length) {
-      console.log("found image: ", res[0]);
       result(null, res[0]);
       return;
     }
@@ -195,7 +172,6 @@ User.getImage = (idfiles, result) => {
 User.hasImageProfile = (UserId, result) => {
   sql.query("SELECT * FROM files WHERE users_id = ? ORDER BY idfiles DESC LIMIT 1", UserId, (err, res) => {
     if (res.length) {
-      console.log("found image: ", res[0]);
       result(null, res[0]);
       return;
     } else {
