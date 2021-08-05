@@ -23,7 +23,6 @@ User.create = (newUser, result) => {
         return;
       }
 
-      console.log("created user: ", { id: res.insertId, ...newUser });
       result(null, { id: res.insertId, ...newUser });
     });
   })
@@ -40,7 +39,6 @@ User.login = (user, result) => {
     }
 
     if (res.length) {
-      console.log(res, 'res entier')
       result(null, res[0]);
       return;
     } else {

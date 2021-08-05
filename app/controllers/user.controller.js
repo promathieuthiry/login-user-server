@@ -217,7 +217,6 @@ exports.deleteAll = (req, res) => {
 };
 
 exports.checkLogin = (req, res) => {
-  console.log(req.session.user, 'credentials')
   if (req.session.user) {
     res.send({ loggedIn: true, user: req.user.session })
   } else {
@@ -263,10 +262,10 @@ exports.getUserImage = (req, res) => {
       // const contentType = await FileType.fromBuffer(img.img); // get the mimetype of the buffer (in this case its gonna be jpg but can be png or w/e)
       // res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
       // res.end(img.img);
-
-      FileType.fromBuffer(data.img, (contentType) => {
+      console.log(data, "data")
+      FileType.fromBuffer(data.data, (contentType) => {
         res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
-        res.end(img.img);
+        res.end(data.data);
       })
     };
   });
