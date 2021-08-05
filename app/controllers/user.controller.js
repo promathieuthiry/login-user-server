@@ -4,6 +4,8 @@ const saltRounds = 10;
 const { createToken } = require("../utilities/JWT")
 const { validateUser, updateUser } = require("../utilities/joi")
 const { validateImage } = require("../utilities/image")
+const FileType = require('file-type');
+
 
 // Create and Save a new User
 exports.create = (req, res) => {
