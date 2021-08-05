@@ -275,7 +275,7 @@ exports.hasImage = (req, res) => {
       console.log(data, "data")
       res.send({
         hasImage: true,
-        idfiles: idfiles
+        idfiles: data.idfiles
       });
     } else {
       res.status(500).send({
