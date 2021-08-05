@@ -16,6 +16,7 @@ if (app.get('env') == 'development') {
   app.use(morgan('tiny'))
 }
 
+require('./app/utilities/prod')(app)
 // middleware for parsing json objects
 app.use(cors({
   origin: ["http://localhost:3000"],

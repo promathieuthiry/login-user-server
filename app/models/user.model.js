@@ -84,9 +84,9 @@ User.getAll = result => {
 
 User.updateById = (id, user, result) => {
   sql.query(
-    "UPDATE users SET firstName = ?, lastName = ?, email = ?, phone = ?, address = ?, city = ?, state = ?, zipcode = ?, country = ? WHERE id = ?",
+    "UPDATE users SET firstName = ?, lastName = ?, occupation = ?, email = ?, phone = ?, address = ?, city = ?, state = ?, zipcode = ?, country = ? WHERE id = ?",
     // firstName: "", lastName: "", email: "", phone: "", address: "", city: "", state: "", zipCode: "", country: "", password:
-    [user.firstName, user.lastName, user.email, user.phone ? user.phone : null, user.address, user.city, user.state, user.zipcode ? user.zipcode : null, user.country, +id],
+    [user.firstName, user.lastName, user.occupation, user.email, user.phone ? user.phone : null, user.address, user.city, user.state, user.zipcode ? user.zipcode : null, user.country, +id],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -108,9 +108,9 @@ User.updateById = (id, user, result) => {
 
 User.updateByIdWithPassword = (id, user, result) => {
   sql.query(
-    "UPDATE users SET firstName = ?, lastName = ?, email = ?, phone = ?, address = ?, city = ?, state = ?, zipcode = ?, country = ?, password = ? WHERE id = ?",
+    "UPDATE users SET firstName = ?, lastName = ?, occupation = ?, email = ?, phone = ?, address = ?, city = ?, state = ?, zipcode = ?, country = ?, password = ? WHERE id = ?",
     // firstName: "", lastName: "", email: "", phone: "", address: "", city: "", state: "", zipCode: "", country: "", password:
-    [user.firstName, user.lastName, user.email, user.phone ? user.phone : null, user.address, user.city, user.state, user.zipcode ? user.zipcode : null, user.country, user.password, +id],
+    [user.firstName, user.lastName, user.email, user.occupation, user.phone ? user.phone : null, user.address, user.city, user.state, user.zipcode ? user.zipcode : null, user.country, user.password, +id],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
