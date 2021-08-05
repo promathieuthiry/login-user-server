@@ -264,7 +264,7 @@ exports.getUserImage = (req, res) => {
       // res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
       // res.end(img.img);
 
-      FileType.fromBuffer(img.img, (contentType) => {
+      FileType.fromBuffer(data.img, (contentType) => {
         res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
         res.end(img.img);
       })
