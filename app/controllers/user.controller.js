@@ -263,10 +263,19 @@ exports.getUserImage = (req, res) => {
       // res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
       // res.end(img.img);
       console.log(data, "data")
-      FileType.fromBuffer(data.data, (contentType) => {
-        res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
-        res.end(data.data);
-      })
+
+
+      FileType.fromBuffer(data.data)
+        .then((contentType) => {
+          res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
+          res.end(data.data);
+        })
+        .catch(error => console.warn(error))
+
+      // FileType.fromBuffer(data.data, (contentType) => {
+      //   res.type(contentType.mime); // not always needed most modern browsers including chrome will understand it is an img without this
+      //   res.end(data.data);
+      // })
     };
   });
 };
