@@ -272,6 +272,7 @@ exports.getUserImage = (req, res) => {
 exports.hasImage = (req, res) => {
   User.hasImageProfile(req.params.userId, (err, data) => {
     if (data) {
+      console.log(data, "data")
       res.send({
         hasImage: true
       });
