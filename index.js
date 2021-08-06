@@ -20,8 +20,8 @@ if (app.get('env') == 'development') {
 require('./app/utilities/prod')(app)
 // middleware for parsing json objects
 app.use(cors({
-  origin: ["https://login-user-exp.netlify.app"],
-  // origin: ["http://localhost:3000"],
+  // origin: ["https://login-user-exp.netlify.app"],
+  origin: ["http://localhost:3000"],
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   credentials: true,
 }))
