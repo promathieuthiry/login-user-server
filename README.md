@@ -42,6 +42,7 @@ Users should be able to:
 
 - Connect a database with MySQL
 - CRUD operations
+- Create an API
 - Build and Structure MVC Application
 - Create my own middleware
 - Authenticating Users with JWT
